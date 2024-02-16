@@ -1,5 +1,7 @@
 import { useAuthStore } from '@/stores/useAuth';
 
+//import { inject } from 'vue';
+
 export const fetchWrapper = {
   get: request('GET'),
   post: request('POST'),
@@ -24,17 +26,32 @@ function request(method) {
   };
 }
 
+
 // helper functions
 
 function authHeader() {
+
+  //const keycloak = inject('keycloak');
+
   // return auth header with jwt if user is logged in and request is to the api url
-  const { user } = useAuthStore();
-  const isLoggedIn = !!user?.token;
+  //const { user } = useAuthStore();
+  const  token  = JSON.parse(localStorage.getItem('user'));
+  //const { user }  = localStorage.getItem('user');
+  const  isLoggedIn  = JSON.parse(localStorage.getItem('isLoggedIn'));
+
+  //const isLoggedIn = !!user?.token;
+  //const isLoggedIn = true ;//keycloak.authenticated;
+  //keycloak.authenticated
   console.log('isLoggedIn', isLoggedIn);
+  //console.log('isLoggedIn', keycloak.authenticated);
+
+
   //const isApiUrl = url.startsWith(import.meta.env.VITE_API_URL);
   //if (isLoggedIn && isApiUrl) {
   if (isLoggedIn) {
-    return { Authorization: `Bearer ${user.token}` };
+    //return { Authorization: `Bearer ${user.token}` };
+    return { Authorization: `Bearer ${token}` };
+    //return { Authorization: `Bearer ${keycloak.token}` };
   } else {
     return {};
   }
@@ -58,3 +75,4 @@ function handleResponse(response) {
     return data;
   });
 }
+

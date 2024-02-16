@@ -18,16 +18,16 @@ export default defineConfig({
   ],
   //lcocal test 시 주석 삭제 
   // ---- Start -----
-  // server: {
-  //   host: 'localhost',
-  //   port: 3000,
-  //   proxy: {
-  //     '/api': {
-  //       target: 'http://frontend.211.252.87.34.nip.io:30687',
-  //       changeOrigin: true
-  //     }
-  //   }
-  // },
+   server: {
+     host: 'localhost',
+     port: 3000,
+     proxy: {
+       '/api': {
+         target: 'http://localhost:9080',
+         changeOrigin: true
+       }
+     }
+   },
   // ---- end -----
   //lcocal test 시 주석 삭제 
   resolve: {
