@@ -11,8 +11,7 @@ export const fetchWrapper = {
 
 function request(method) {
   return async (url, body) => {
-    const vi_url = '/api/v1';
-    const composeUrl = url + vi_url ; //url; //import.meta.env.VITE_API_URL + url
+    const composeUrl = url ; //import.meta.env.VITE_API_URL + url
 
     const requestOptions = {
       method,
