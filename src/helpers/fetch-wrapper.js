@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/stores/useAuth';
+import { useAuthStore } from '@features/keycloak/store/useAuthStore';
 
 //import { inject } from 'vue';
 
@@ -6,7 +6,7 @@ export const fetchWrapper = {
   get: request('GET'),
   post: request('POST'),
   put: request('PUT'),
-  delete: request('DELETE')
+  delete: request('DELETE'),
 };
 
 function request(method) {
@@ -15,7 +15,7 @@ function request(method) {
 
     const requestOptions = {
       method,
-      headers: authHeader(composeUrl)
+      headers: authHeader(composeUrl),
     };
     if (body) {
       requestOptions.headers['Content-Type'] = 'application/json';
@@ -26,18 +26,16 @@ function request(method) {
   };
 }
 
-
 // helper functions
 
 function authHeader() {
-
   //const keycloak = inject('keycloak');
 
   // return auth header with jwt if user is logged in and request is to the api url
   //const { user } = useAuthStore();
-  const  token  = JSON.parse(localStorage.getItem('user'));
+  const { accessToken } = JSON.parse(localStorage.getItem('auth'));
   //const { user }  = localStorage.getItem('user');
-  const  isLoggedIn  = JSON.parse(localStorage.getItem('isLoggedIn'));
+  const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn'));
 
   //const isLoggedIn = !!user?.token;
   //const isLoggedIn = true ;//keycloak.authenticated;
@@ -45,12 +43,11 @@ function authHeader() {
   console.log('isLoggedIn', isLoggedIn);
   //console.log('isLoggedIn', keycloak.authenticated);
 
-
   //const isApiUrl = url.startsWith(import.meta.env.VITE_API_URL);
   //if (isLoggedIn && isApiUrl) {
   if (isLoggedIn) {
     //return { Authorization: `Bearer ${user.token}` };
-    return { Authorization: `Bearer ${token}` };
+    return { Authorization: `Bearer ${accessToken}` };
     //return { Authorization: `Bearer ${keycloak.token}` };
   } else {
     return {};
@@ -75,4 +72,3 @@ function handleResponse(response) {
     return data;
   });
 }
-

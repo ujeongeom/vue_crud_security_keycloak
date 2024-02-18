@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useUserStore} from "@/keycloak/user";
+import { useUserStore } from '@/keycloak/user';
 const userStore = useUserStore();
 </script>
 

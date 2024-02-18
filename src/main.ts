@@ -1,5 +1,13 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedState); // Use persisted state plugin with Pinia so our store data will persist across refreshes
+
+import App from './App.vue';
+const app = createApp(App);
+
+import router from './router';
 
 import { Quasar, Dialog, Notify } from 'quasar';
 
@@ -10,22 +18,17 @@ import '@quasar/extras/material-icons/material-icons.css';
 // Import Quasar css
 import 'quasar/src/css/index.sass';
 
-import App from './App.vue';
-import router from './router';
-
 // 테스트 용도의 더미 백엔드
 // import { fakeBackend } from './helpers';
 // fakeBackend();
 
-const app = createApp(App);
-
-app.use(createPinia());
+app.use(pinia);
 app.use(router);
 app.use(Quasar, {
   plugins: {
     Dialog,
-    Notify
-  } // import Quasar plugins and add here
+    Notify,
+  }, // import Quasar plugins and add here
   /*
   config: {
     brand: {

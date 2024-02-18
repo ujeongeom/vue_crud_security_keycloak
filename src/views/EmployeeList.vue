@@ -1,6 +1,11 @@
 <template>
   <q-layout class="bg-grey-1">
-    <q-header elevated class="text-white" style="background: #24292e" height-hint="61.59">
+    <q-header
+      elevated
+      class="text-white"
+      style="background: #24292e"
+      height-hint="61.59"
+    >
       <q-toolbar class="q-py-sm q-px-md">
         <q-btn
           round
@@ -69,7 +74,13 @@
           >
             <template v-slot:body-cell-actions="props">
               <q-td :props="props">
-                <q-btn flat round color="warning" icon="edit" @click="onEdit(props.row)"></q-btn>
+                <q-btn
+                  flat
+                  round
+                  color="warning"
+                  icon="edit"
+                  @click="onEdit(props.row)"
+                ></q-btn>
                 <q-btn
                   flat
                   round
@@ -95,12 +106,24 @@ const columns = [
     align: 'left',
     field: (row) => row.empName,
     format: (val) => `${val}`,
-    sortable: true
+    sortable: true,
   },
-  { name: 'empDeptName', align: 'left', label: '부서명', field: 'empDeptName', sortable: true },
-  { name: 'empTelNo', align: 'left', label: '전화번호', field: 'empTelNo', sortable: true },
+  {
+    name: 'empDeptName',
+    align: 'left',
+    label: '부서명',
+    field: 'empDeptName',
+    sortable: true,
+  },
+  {
+    name: 'empTelNo',
+    align: 'left',
+    label: '전화번호',
+    field: 'empTelNo',
+    sortable: true,
+  },
   { name: 'empMail', align: 'left', label: '이메일', field: 'empMail' },
-  { name: 'actions', align: 'left', label: 'Actions' }
+  { name: 'actions', align: 'left', label: 'Actions' },
 ];
 
 import { fabGithub } from '@quasar/extras/fontawesome-v6';
@@ -116,7 +139,7 @@ const { getEmployees } = employeeStore;
 
 const authStore = useAuthStore();
 onMounted(() => {
-  if (!authStore.user?.token) {
+  if (!authStore.user?.accessToken) {
     return router.push('/login');
   }
   // fetch

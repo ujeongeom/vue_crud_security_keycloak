@@ -2,7 +2,13 @@ export { fakeBackend };
 
 function fakeBackend() {
   let fakeUsers = [
-    { id: 1, username: 'test', password: 'test', firstName: 'Test', lastName: 'User' }
+    {
+      id: 1,
+      username: 'test',
+      password: 'test',
+      firstName: 'Test',
+      lastName: 'User',
+    },
   ];
   let realFetch = window.fetch;
   window.fetch = function (url, opts) {
@@ -28,7 +34,9 @@ function fakeBackend() {
 
       function authenticate() {
         const { username, password } = body();
-        const user = fakeUsers.find((x) => x.username === username && x.password === password);
+        const user = fakeUsers.find(
+          (x) => x.username === username && x.password === password,
+        );
 
         if (!user) return error('Username or password is incorrect');
 
@@ -37,7 +45,7 @@ function fakeBackend() {
           username: user.username,
           firstName: user.firstName,
           lastName: user.lastName,
-          token: 'fake-jwt-token'
+          token: 'fake-jwt-token',
         });
       }
 
@@ -49,18 +57,25 @@ function fakeBackend() {
       // helper functions
 
       function ok(body) {
-        resolve({ ok: true, text: () => Promise.resolve(JSON.stringify(body)) });
+        resolve({
+          ok: true,
+          text: () => Promise.resolve(JSON.stringify(body)),
+        });
       }
 
       function unauthorized() {
         resolve({
           status: 401,
-          text: () => Promise.resolve(JSON.stringify({ message: 'Unauthorized' }))
+          text: () =>
+            Promise.resolve(JSON.stringify({ message: 'Unauthorized' })),
         });
       }
 
       function error(message) {
-        resolve({ status: 400, text: () => Promise.resolve(JSON.stringify({ message })) });
+        resolve({
+          status: 400,
+          text: () => Promise.resolve(JSON.stringify({ message })),
+        });
       }
 
       function isAuthenticated() {

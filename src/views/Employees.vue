@@ -7,15 +7,29 @@ const columns = [
     align: 'left',
     field: (row) => row.empName,
     format: (val) => `${val}`,
-    sortable: true
+    sortable: true,
   },
-  { name: 'empDeptName', align: 'left', label: '부서명', field: 'empDeptName', sortable: true },
-  { name: 'empTelNo', align: 'left', label: '전화번호', field: 'empTelNo', sortable: true },
+  {
+    name: 'empDeptName',
+    align: 'left',
+    label: '부서명',
+    field: 'empDeptName',
+    sortable: true,
+  },
+  {
+    name: 'empTelNo',
+    align: 'left',
+    label: '전화번호',
+    field: 'empTelNo',
+    sortable: true,
+  },
   { name: 'empMail', align: 'left', label: '이메일', field: 'empMail' },
-  { name: 'actions', align: 'center', label: 'Actions' }
+  { name: 'actions', align: 'center', label: 'Actions' },
 ];
 
 import { ref, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const show_dialog = ref(false);
 const isEditMode = ref(false);
@@ -24,14 +38,14 @@ const editedItem = ref({
   empName: '',
   empDeptName: '',
   empTelNo: '',
-  empMail: ''
+  empMail: '',
 });
 const defaultItem = ref({
   id: '',
   empName: '',
   empDeptName: '',
   empTelNo: '',
-  empMail: ''
+  empMail: '',
 });
 
 // Fetch Employees
@@ -39,22 +53,28 @@ import { storeToRefs } from 'pinia';
 import { useEmployeeStore } from '@/stores/useEmployee';
 const employeeStore = useEmployeeStore();
 const { employees, isLoading } = storeToRefs(employeeStore);
-const { getEmployees, addEmployee, editEmployee, deleteEmployee } = employeeStore;
+const { addEmployee, editEmployee, deleteEmployee } = employeeStore;
 
 // Logout
-import { useAuthStore } from '@/stores/useAuth';
+import { useAuthStore } from '@features/keycloak/store/useAuthStore';
 const authStore = useAuthStore();
+import { serviceFactory } from '@features/keycloak/services/factory';
+const keycloakService = serviceFactory(
+  import.meta.env.VITE_KEYCLOAK_ENABLED,
+  authStore,
+);
 
 // fetch
-onMounted(() => {
-  getEmployees();
+onMounted(async () => {
+  await keycloakService.login();
+  // getEmployees();
 });
 
 watch(
   () => employeeStore.employees,
   () => {
     console.log('employeeStore.employees changed to');
-  }
+  },
 );
 
 const initAdd = () => {
@@ -71,11 +91,16 @@ const initEdit = (item) => {
 };
 
 const handleDeleteEmployee = (item) => {
-  confirm(`${item.empName} 직원을 삭제하시겠습니까?`) && deleteEmployee(item.id);
+  confirm(`${item.empName} 직원을 삭제하시겠습니까?`) &&
+    deleteEmployee(item.id);
 };
 
 const handleSubmit = () => {
-  console.log('handleSubmit', editedItem.value.empName, editedItem.value.empDeptName);
+  console.log(
+    'handleSubmit',
+    editedItem.value.empName,
+    editedItem.value.empDeptName,
+  );
 
   const { id, empName, empDeptName, empTelNo, empMail } = editedItem.value;
 
@@ -89,7 +114,7 @@ const handleSubmit = () => {
       empName,
       empDeptName,
       empTelNo,
-      empMail
+      empMail,
     });
   }
 
@@ -100,20 +125,37 @@ const handleReset = () => {
   editedItem.value = Object.assign({}, defaultItem);
   show_dialog.value = false;
 };
+
+const logout = async () => {
+  await router.push('/login');
+  keycloakService.logout();
+  localStorage.removeItem('auth');
+};
 </script>
 
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout v-if="authStore?.user?.username" view="hHh lpR fFf">
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
         <q-toolbar-title>Cloud Native EDU ( Keycloak )</q-toolbar-title>
-        <q-btn flat round icon="logout" @click="authStore.logout" />
+        <q-space />
+        <q-btn
+          v-show="authStore?.user?.username"
+          flat
+          round
+          :label="authStore?.user?.username"
+          class="q-mr-md"
+        >
+        </q-btn>
+        <q-btn flat round icon="logout" @click.stop="logout" />
       </q-toolbar>
     </q-header>
 
     <q-footer elevated class="bg-grey-8 text-white">
       <q-toolbar>
-        <q-toolbar-title class="text-body1">Vue + Spring Boot + Keycloak</q-toolbar-title>
+        <q-toolbar-title class="text-body1">
+          Vue + Spring Boot + Keycloak
+        </q-toolbar-title>
       </q-toolbar>
     </q-footer>
 
@@ -146,20 +188,28 @@ const handleReset = () => {
               <q-dialog v-model="show_dialog">
                 <q-card flat bordered class="q-pa-md" style="min-width: 400px">
                   <q-card-section>
-                    <div class="text-h6">{{ isEditMode ? '직원 수정' : '직원 추가' }}</div>
+                    <div class="text-h6">
+                      {{ isEditMode ? '직원 수정' : '직원 추가' }}
+                    </div>
                   </q-card-section>
 
                   <q-separator inset />
 
                   <q-card-section>
-                    <q-form @submit.prevent="handleSubmit" @reset="handleReset" class="q-gutter-md">
+                    <q-form
+                      @submit.prevent="handleSubmit"
+                      @reset="handleReset"
+                      class="q-gutter-md"
+                    >
                       <q-input
                         filled
                         v-model="editedItem.empName"
                         label="이름 *"
                         hint="Emp Name"
                         lazy-rules
-                        :rules="[(val) => (val && val.length > 0) || '필수값입니다']"
+                        :rules="[
+                          (val) => (val && val.length > 0) || '필수값입니다',
+                        ]"
                       />
                       <q-input
                         filled
@@ -167,7 +217,9 @@ const handleReset = () => {
                         label="부서명"
                         hint="Dept Name"
                         lazy-rules
-                        :rules="[(val) => (val && val.length > 0) || '필수값입니다']"
+                        :rules="[
+                          (val) => (val && val.length > 0) || '필수값입니다',
+                        ]"
                       />
                       <q-input
                         filled
@@ -175,7 +227,9 @@ const handleReset = () => {
                         label="전화번호"
                         hint="Tel No"
                         lazy-rules
-                        :rules="[(val) => (val && val.length > 0) || '필수값입니다']"
+                        :rules="[
+                          (val) => (val && val.length > 0) || '필수값입니다',
+                        ]"
                       />
                       <q-input
                         filled
@@ -183,7 +237,9 @@ const handleReset = () => {
                         label="이메일 *"
                         hint="Email Address"
                         lazy-rules
-                        :rules="[(val) => (val && val.length > 0) || '필수값입니다']"
+                        :rules="[
+                          (val) => (val && val.length > 0) || '필수값입니다',
+                        ]"
                       />
 
                       <div class="flex justify-between">
@@ -198,7 +254,13 @@ const handleReset = () => {
                             !editedItem.empMail
                           "
                         />
-                        <q-btn label="Cancel" type="reset" v-close-popup color="negative" flat />
+                        <q-btn
+                          label="Cancel"
+                          type="reset"
+                          v-close-popup
+                          color="negative"
+                          flat
+                        />
                       </div>
                     </q-form>
                   </q-card-section>
@@ -209,7 +271,13 @@ const handleReset = () => {
 
           <template v-slot:body-cell-actions="props">
             <q-td :props="props">
-              <q-btn flat round color="warning" icon="edit" @click="initEdit(props.row)"></q-btn>
+              <q-btn
+                flat
+                round
+                color="warning"
+                icon="edit"
+                @click="initEdit(props.row)"
+              ></q-btn>
               <q-btn
                 flat
                 round
@@ -224,7 +292,5 @@ const handleReset = () => {
     </q-page-container>
   </q-layout>
 </template>
-
-<script setup></script>
 
 <style lang="scss" scoped></style>

@@ -16,7 +16,7 @@ axios.interceptors.request.use(
   function (error) {
     // 요청 오류가 있는 작업 수행
     return Promise.reject(error);
-  }
+  },
 );
 
 // 응답 인터셉터 추가하기
@@ -41,9 +41,9 @@ axios.interceptors.response.use(
           props: {
             error: {
               message: error.response.data.message,
-              status: error.status
-            }
-          }
+              status: error.status,
+            },
+          },
         });
         break;
       case 422:
@@ -53,7 +53,7 @@ axios.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axios;

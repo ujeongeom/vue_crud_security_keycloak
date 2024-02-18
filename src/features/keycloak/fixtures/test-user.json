@@ -1,0 +1,7 @@
+{
+  "username": "mockuser",
+  "family_name": "홍길동",
+  "refToken": "dummy-refToken",
+  "token": "dummy-token",
+  "roles": ["observability-admin", "observability-viewer"]
+}

@@ -8,7 +8,7 @@ const employeeUrl = '/api/v1/employees';
 export const useEmployeeStore = defineStore('employee', {
   state: () => ({
     employees: [],
-    isLoading: false
+    isLoading: false,
   }),
   actions: {
     // 모든 임직원 조회
@@ -38,8 +38,12 @@ export const useEmployeeStore = defineStore('employee', {
     async deleteEmployee(id) {
       try {
         this.isLoading = true;
-        const deletedEmployee = await fetchWrapper.post(`/api/v1/employee/${id}`);
-        this.employees = this.employees.filter((t) => t.id !== deletedEmployee.id);
+        const deletedEmployee = await fetchWrapper.post(
+          `/api/v1/employee/${id}`,
+        );
+        this.employees = this.employees.filter(
+          (t) => t.id !== deletedEmployee.id,
+        );
       } catch (error) {
         console.log(error);
       } finally {
@@ -55,7 +59,10 @@ export const useEmployeeStore = defineStore('employee', {
 
         if (!target) return;
 
-        const updatedEmployee = await fetchWrapper.post(`${employeeUrl}/${id}`, employee);
+        const updatedEmployee = await fetchWrapper.post(
+          `${employeeUrl}/${id}`,
+          employee,
+        );
 
         target.empName = updatedEmployee.empName;
         target.empDeptName = updatedEmployee.empDeptName;
@@ -66,8 +73,8 @@ export const useEmployeeStore = defineStore('employee', {
       } finally {
         this.isLoading = false;
       }
-    }
-  }
+    },
+  },
 });
 
 if (import.meta.hot) {
