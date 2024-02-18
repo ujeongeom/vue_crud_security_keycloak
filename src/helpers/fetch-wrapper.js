@@ -29,26 +29,15 @@ function request(method) {
 // helper functions
 
 function authHeader() {
-  //const keycloak = inject('keycloak');
 
   // return auth header with jwt if user is logged in and request is to the api url
-  //const { user } = useAuthStore();
-  const { accessToken } = JSON.parse(localStorage.getItem('auth'));
-  //const { user }  = localStorage.getItem('user');
+  const { user } = JSON.parse(localStorage.getItem('auth'));
   const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn'));
 
-  //const isLoggedIn = !!user?.token;
-  //const isLoggedIn = true ;//keycloak.authenticated;
-  //keycloak.authenticated
   console.log('isLoggedIn', isLoggedIn);
-  //console.log('isLoggedIn', keycloak.authenticated);
 
-  //const isApiUrl = url.startsWith(import.meta.env.VITE_API_URL);
-  //if (isLoggedIn && isApiUrl) {
   if (isLoggedIn) {
-    //return { Authorization: `Bearer ${user.token}` };
-    return { Authorization: `Bearer ${accessToken}` };
-    //return { Authorization: `Bearer ${keycloak.token}` };
+    return { Authorization: `Bearer ${user.accessToken}` };
   } else {
     return {};
   }

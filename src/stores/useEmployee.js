@@ -1,8 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { fetchWrapper } from '@/helpers';
 
-//const baseUrl = `${import.meta.env.VITE_API_URL}/api/v1/employees`;
-
 const employeeUrl = '/api/v1/employees';
 
 export const useEmployeeStore = defineStore('employee', {

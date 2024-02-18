@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export type UseAuthStoreReturnType = ReturnType<typeof useAuthStore>;
 
-interface DevpilotUserProfile {
+interface UserProfile {
   username: string;
   family_name: string;
   refToken: string;
@@ -11,7 +11,7 @@ interface DevpilotUserProfile {
 }
 
 export type UserStore = {
-  user: DevpilotUserProfile | null;
+  user: UserProfile | null;
   errorMsg: string;
 };
 
