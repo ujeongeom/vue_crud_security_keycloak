@@ -3,7 +3,6 @@ FROM node:lts-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
 COPY package*.json ./
-# COPY .npmrc /app/.npmrc
 
 RUN npm install
 COPY . .
