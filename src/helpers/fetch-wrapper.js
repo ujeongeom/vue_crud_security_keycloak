@@ -32,8 +32,7 @@ function authHeader() {
 
   // return auth header with jwt if user is logged in and request is to the api url
   const { user } = JSON.parse(localStorage.getItem('auth'));
-  console.log('user', user);
-  const token = JSON.parse(user.accessToken);
+  const token = user.accessToken; // JSON.parse(user.accessToken);
   console.log('token', token);
 
   if (token) {
