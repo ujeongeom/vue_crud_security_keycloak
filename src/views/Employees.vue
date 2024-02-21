@@ -53,7 +53,7 @@ import { storeToRefs } from 'pinia';
 import { useEmployeeStore } from '@/stores/useEmployee';
 const employeeStore = useEmployeeStore();
 const { employees, isLoading } = storeToRefs(employeeStore);
-const { addEmployee, editEmployee, deleteEmployee } = employeeStore;
+const {getEmployees, addEmployee, editEmployee, deleteEmployee } = employeeStore;
 
 // Logout
 import { useAuthStore } from '@features/keycloak/store/useAuthStore';
@@ -67,7 +67,7 @@ const keycloakService = serviceFactory(
 // fetch
 onMounted(async () => {
    await keycloakService.login();
-  // getEmployees();
+   getEmployees();
 });
 
 watch(
